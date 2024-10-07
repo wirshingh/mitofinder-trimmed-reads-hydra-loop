@@ -1,6 +1,16 @@
-## Run Mitofinder on Hydra using trimmed reads in a loo
+## Run Mitofinder on Hydra using trimmed reads in a loop
+### Job Summary
 
-"
+This job will run mitofinder in a loop on Hydra using trimmed reads.
+User will need to provide paths to trimmed reads and a reference data set (see TO RUN THIS JOB below).
+Results will be in 3 directories where the job file is run:
+ 1. "mitofinder_trimmedreads_All_Results" will contain all results for each sample
+ 2. "mitofinder_trimmedreads_Final_Results" will contain only the final genes assembled,
+ relevant annotation files for GenBank/Geneious, and log files.
+ 3. "mitofinder_trimmedreads_Final_Genes" will contain only the final genes assembled in 
+ fasta format.
+
+```
 #!/bin/sh
 # ----------------Parameters---------------------- #
 #$ -S /bin/sh
@@ -25,7 +35,7 @@ echo + NSLOTS = $NSLOTS
 mkdir -p mitofinder_trimmedreads_All_Results
 
 # Define the directory containing the trimmed reads
-SAMPLEDIR="path to trimmed reads"  # Use double quotes for string assignment
+SAMPLEDIR="path to trimmed reads"  
 
 # Loop through the R1 files
 for GETSAMPLENAME in ${SAMPLEDIR}/*_R1_PE_trimmed.fastq.gz; do
@@ -35,19 +45,19 @@ for GETSAMPLENAME in ${SAMPLEDIR}/*_R1_PE_trimmed.fastq.gz; do
     mkdir -p ./mitofinder_trimmedreads_All_Results/${SAMPLENAME}
     
     # Change to the sample's directory
-    cd mitofinder_trimmedreads_All_Results/${SAMPLENAME} || exit 1  # Ensure we exit if cd fails
+    cd mitofinder_trimmedreads_All_Results/${SAMPLENAME} || exit 1  # Ensure exit if cd fails
 
     # Run mitofinder with the specified options
     mitofinder \
         -j "${SAMPLENAME}_mitofinder_trimmedreads_results" \
         -o 5 \
-        -r /scratch/nmnh_lab/macdonaldk/ref/mito_reference_(ref_SEE_BELOW)_*.gb \
+        -r "path to reference data set.gb" \
         -1 "${SAMPLEDIR}/${SAMPLENAME}_R1_PE_trimmed.fastq.gz" \
         -2 "${SAMPLEDIR}/${SAMPLENAME}_R2_PE_trimmed.fastq.gz" \
         --new-genes
 
     # Return to the original directory
-    cd ../.. || exit 1  # Ensure we exit if cd fails
+    cd ../.. || exit 1  # Ensure exit if cd fails
 done
 #
 #
@@ -68,4 +78,48 @@ cp "$FINAL_GENES"/*Final_Results/*final_genes_NT.fasta ./mitofinder_trimmedreads
 done
 #
 echo = `date` job $JOB_NAME done
-"
+```
+
+
+### TO RUN THIS JOB
+1. Provide the path to the trimmed reads for the variable SAMPLEDIR= in the job file (example, SAMPLEDIR="/scratch/username/trimmed_reads"
+2. Your trimmed reads files need to end in “_R1(andR2)_PE_trimmed.fastq.gz” for the loop to work. Or alternatively, edit the job file to match your trimmed reads file names accordingly.
+3. For flag -o write digit for genetic code -o (see GENETIC CODES below)
+4. For flag -r include path to refrence data set that ends in ".gb". Or, premade reference data sets can be used. See "REFERENCE DATABASES" below.
+
+ GENETIC CODES
+ 1. The Standard Code 
+ 2. The Vertebrate Mitochondrial Code 
+ 3. The Yeast Mitochondrial Code 
+ 4. The Mold, Protozoan, and Coelenterate Mitochondrial Code and the
+     Mycoplasma/Spiroplasma Code
+ 5. The Invertebrate Mitochondrial Code
+ 6. The Ciliate, Dasycladacean and Hexamita Nuclear Code 
+ 9. The Echinoderm and Flatworm Mitochondrial Code 
+ 10. The Euplotid Nuclear Code 
+ 11. The Bacterial, Archaeal and Plant Plastid Code 
+ 12. The Alternative Yeast Nuclear Code 
+ 13. The Ascidian Mitochondrial Code 
+ 14. The Alternative Flatworm Mitochondrial Code 
+ 16. Chlorophycean Mitochondrial Code 
+ 21. Trematode Mitochondrial Code 
+ 22. Scenedesmus obliquus Mitochondrial Code 
+ 23. Thraustochytrium Mitochondrial Code 
+ 24. Pterobranchia Mitochondrial Code 
+ 25. Candidate Division SR1 and Gracilibacteria Code
+
+ REFERENCE DATABASES
+ -r is the path to the reference database in genbank (.gb) format. 
+ Premade references can be found in /scratch/nmnh_lab/macdonaldk/ref/mito_reference_(ref)_*.gb:
+ Replace (ref) with one of the taxon groups below
+ "Annelida", "Arthropoda", "Bryozoa", "Cnidaria", "Ctenophora", "Echinodermata", 
+ "Mollusca", "Nemertea", "Porifera", "Tunicata", "Vertebrata" or , "Metazoa"
+
+FLAGS SUMMARY
+ -j Sequence ID to be used throughout the process
+ -o is the genetic code to use. The list below is from the mitofinder manual.
+ -1 is the path to the R1 PE trimmed file, 
+ -2 is the path to the R2 PE trimmed file. 
+ --new-genes denotes that some of the genes in the reference database are not
+ one of the "official" genes as determined by mitofinder.
+
