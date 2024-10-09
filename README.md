@@ -108,18 +108,23 @@ echo = `date` job $JOB_NAME done
  24. Pterobranchia Mitochondrial Code 
  25. Candidate Division SR1 and Gracilibacteria Code
 
+FLAGS
+
+-j Sequence ID to be used throughout the process
+
+ -o is the genetic code to use. See 'Genetic Codes' list above.
+ 
+ -1 is the path to the R1 PE trimmed file
+ 
+ -2 is the path to the R2 PE trimmed file
+ 
+ --new-genes denotes that some of the genes in the reference database are not
+ one of the "official" genes as determined by mitofinder.
+
  REFERENCE DATABASES
- -r is the path to the reference database in genbank (.gb) format. 
- Premade references can be found in /scratch/nmnh_lab/macdonaldk/ref/mito_reference_(ref)_*.gb:
+ 
+ -r is the path to the reference database in genbank (.gb) format. Custom reference databases can be used. Alternatively, premade references can be found in /scratch/nmnh_lab/macdonaldk/ref/mito_reference_(ref)_*.gb:
  Replace (ref) with one of the taxon groups below
  "Annelida", "Arthropoda", "Bryozoa", "Cnidaria", "Ctenophora", "Echinodermata", 
  "Mollusca", "Nemertea", "Porifera", "Tunicata", "Vertebrata" or , "Metazoa"
-
-FLAGS SUMMARY
- -j Sequence ID to be used throughout the process
- -o is the genetic code to use. The list below is from the mitofinder manual.
- -1 is the path to the R1 PE trimmed file, 
- -2 is the path to the R2 PE trimmed file. 
- --new-genes denotes that some of the genes in the reference database are not
- one of the "official" genes as determined by mitofinder.
 
