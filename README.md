@@ -2,7 +2,7 @@
 ### Job Summary
 
 This job will run mitofinder in a loop on Hydra using trimmed reads.
-User will need to provide paths to trimmed reads and a reference data set (see TO RUN THIS JOB below).
+User will need to provide paths to trimmed reads and a reference data set (see 'To Run this Job' below).
 Results will be in 3 directories where the job file is run:
  1. "mitofinder_trimmedreads_All_Results" will contain all results for each sample
  2. "mitofinder_trimmedreads_Final_Results" will contain only the final genes assembled,
@@ -81,13 +81,20 @@ echo = `date` job $JOB_NAME done
 ```
 
 
-### TO RUN THIS JOB
-1. Provide the path to the trimmed reads for the variable SAMPLEDIR= in the job file (example, SAMPLEDIR="/scratch/username/trimmed_reads"
-2. Your trimmed reads files need to end in “_R1(andR2)_PE_trimmed.fastq.gz” for the loop to work. Or alternatively, edit the job file to match your trimmed reads file names accordingly.
-3. For flag -o write digit for genetic code -o (see GENETIC CODES below)
-4. For flag -r include path to refrence data set that ends in ".gb". Or, premade reference data sets can be used. See "REFERENCE DATABASES" below.
+### To Run this Job
+The trimmed reads files need to end in '_R1_PE_trimmed.fastq.gz' (forward) and '_R1_PE_trimmed.fastq.gz' (reverse) for the job to work. Alternatively, the job file can be edited to match the trimmed reads file names accordingly.
 
- GENETIC CODES
+These items need to be added in the script:
+
+SAMPLEDIR="path to trimmed reads"
+
+After the '=' paste the path to the trimmed reads.
+
+For flag -o write the digit for the genetic code (see GENETIC CODES below)
+
+For flag -r include path to refrence data set in GenBank format (.gb). Or, premade reference data sets can be used. See "REFERENCE DATABASES" below.
+
+GENETIC CODES
  1. The Standard Code 
  2. The Vertebrate Mitochondrial Code 
  3. The Yeast Mitochondrial Code 
@@ -108,9 +115,10 @@ echo = `date` job $JOB_NAME done
  24. Pterobranchia Mitochondrial Code 
  25. Candidate Division SR1 and Gracilibacteria Code
 
+
 FLAGS
 
--j Sequence ID to be used throughout the process
+ -j Sequence ID to be used throughout the process
 
  -o is the genetic code to use. See 'Genetic Codes' list above.
  
