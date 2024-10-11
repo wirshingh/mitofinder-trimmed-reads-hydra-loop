@@ -86,13 +86,13 @@ The trimmed reads files need to end in '_R1_PE_trimmed.fastq.gz' (forward) and '
 
 These items need to be added in the script:
 
-SAMPLEDIR="path to trimmed reads"
+1. SAMPLEDIR="path to trimmed reads"
 
-After the '=' paste the path to the trimmed reads.
+  After the '=' paste the full path to the trimmed reads.
 
-For flag -o write the digit for the genetic code (see GENETIC CODES below)
+2. For flag -o write the digit for the genetic code (see GENETIC CODES below)
 
-For flag -r include path to refrence data set in GenBank format (.gb). Or, premade reference data sets can be used. See "REFERENCE DATABASES" below.
+3. For flag -r include path to refrence data set in GenBank format (.gb). Or, premade reference data sets can be used. See "REFERENCE DATABASES" below.
 
 GENETIC CODES
  1. The Standard Code 
