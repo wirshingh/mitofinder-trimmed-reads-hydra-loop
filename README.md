@@ -72,7 +72,7 @@ cp    ./*trimmedreads_All_Results/${SAMPLENAME}/*.log ./mitofinder_trimmedreads_
 done
 #
 mkdir mitofinder_trimmedreads_Final_Genes
-for FINAL_GENES in ./*_Final_Results
+for FINAL_GENES in ./*trimmedreads_Final_Results
 do
 cp "$FINAL_GENES"/*Final_Results/*final_genes_NT.fasta ./mitofinder_trimmedreads_Final_Genes
 done
