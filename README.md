@@ -20,9 +20,9 @@ Mitofinder to a separate directory for use in other programs like MITOS.
 #!/bin/sh
 # ----------------Parameters---------------------- #
 #$ -S /bin/sh
-#$ -pe mthread 4
+#$ -pe mthread 9
 #$ -q mThM.q
-#$ -l mres=48G,h_data=12G,h_vmem=12G,himem
+#$ -l mres=72G,h_data=8G,h_vmem=8G,himem
 #$ -cwd
 #$ -j y
 #$ -N mf_trimmedreads
