@@ -35,8 +35,6 @@ module load bioinformatics/mitofinder
 echo + `date` job $JOB_NAME started in $QUEUE with jobID=$JOB_ID on $HOSTNAME
 echo + NSLOTS = $NSLOTS
 #
-#!/bin/bash
-
 # Create the results directory
 mkdir -p mitofinder_trimmedreads_All_Results
 
