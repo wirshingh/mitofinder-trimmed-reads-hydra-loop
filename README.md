@@ -163,6 +163,100 @@ FLAGS
  "Annelida", "Arthropoda", "Bryozoa", "Cnidaria", "Ctenophora", "Echinodermata", 
  "Mollusca", "Nemertea", "Porifera", "Tunicata", "Vertebrata" or , "Metazoa"
 
+ ### Extra Script
+ ### List and Count All Genes Assembled for Each Sample
+
+ Run this job file in the base directory of the Mitofinder run.
+
+ ```
+# /bin/sh
+# ----------------Parameters---------------------- #
+#$ -S /bin/sh
+#$ -q sThC.q
+#$ -l mres=7G,h_data=7G,h_vmem=7G
+#$ -cwd
+#$ -j y
+#$ -N mitofinder_list_and_count_genes
+#$ -o mitofinder_list_and_count_genes.log
+#
+# ----------------Modules------------------------- #
+#
+# ----------------Your Commands------------------- #
+#
+echo + `date` job $JOB_NAME started in $QUEUE with jobID=$JOB_ID on $HOSTNAME
+#
+# Clear or create the output file before starting the loop
+output_file="mitofinder_gene_list_and_counts_for_each_sample.txt"
+> "$output_file"
+
+# Loop through all relevant FASTA files
+for filename in ./mitofinder_trimmedreads_Final_Genes/*.fasta; do
+    # --- ADDED: Print the current file to the terminal ---
+    echo "Processing: $filename"
+    
+    # Extract the sample name from the filename
+    samplename=$(basename "$filename" _genes_NT.fasta)
+    echo "$samplename" >> "$output_file"
+
+    # Process each line of the input file
+    while IFS= read -r line; do
+        # Extract the text after '@'
+        after_at=$(echo "$line" | awk -F'@' '{print $2}')
+        # Append the result to the output file
+        if [ -n "$after_at" ]; then
+            echo "$after_at" >> "$output_file"
+        fi
+    done < "$filename"
+done
+
+# Initialize variables for the counting phase
+current_fasta=""
+line_count=0
+lines_after=()
+temp_file=$(mktemp)
+
+# Move collected data to the temporary file for further processing
+mv "$output_file" "$temp_file"
+> "$output_file"
+
+# Process the temporary file to add counts
+while IFS= read -r line; do
+    if [[ $line == *_final ]]; then
+        # If there is an existing entry, write it out
+        if [ -n "$current_fasta" ]; then
+            echo "$current_fasta total genes = $line_count" >> "$output_file"
+            for l in "${lines_after[@]}"; do
+                echo "$l" >> "$output_file"
+            done
+            echo >> "$output_file"
+        fi
+        # Reset for the new sample
+        current_fasta="$line"
+        line_count=0
+        lines_after=()
+    else
+        lines_after+=("$line")
+        ((line_count++))
+    fi
+done < "$temp_file"
+
+# Handle the final entry in the file
+if [ -n "$current_fasta" ]; then
+    echo "$current_fasta total genes = $line_count" >> "$output_file"
+    for l in "${lines_after[@]}"; do
+        echo "$l" >> "$output_file"
+    done
+fi
+
+# Clean up
+rm "$temp_file"
+echo "------------------------------------------"
+echo "Results successfully saved to '$output_file'"
+#
+echo = `date` job $JOB_NAME done
+
+```
+
 
 
  
