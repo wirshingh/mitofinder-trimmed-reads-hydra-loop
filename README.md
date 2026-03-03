@@ -166,7 +166,7 @@ FLAGS
  ### Extra Script
  ### List and Count All Genes Assembled for Each Sample
 
- Run this job file in the base directory of the Mitofinder run.
+ Run this job file in the base directory of the Mitofinder run after running Mitofinder.
 
  ```
 # /bin/sh
