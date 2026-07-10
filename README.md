@@ -22,8 +22,8 @@ Results will be in 4 directories where the job file is run.
 #$ -l mres=72G,h_data=8G,h_vmem=8G,himem
 #$ -cwd
 #$ -j y
-#$ -N mf_trimmedreads
-#$ -o mf_trimmedreads.log
+#$ -N mf_test
+#$ -o mf_test.log
 #
 # ----------------Modules------------------------- #
 module load bioinformatics/mitofinder
@@ -32,57 +32,70 @@ module load bioinformatics/mitofinder
 echo + `date` job $JOB_NAME started in $QUEUE with jobID=$JOB_ID on $HOSTNAME
 echo + NSLOTS = $NSLOTS
 #
-# Create the results directory
-mkdir -p mitofinder_trimmedreads_All_Results
 
 # Define the directory containing the trimmed reads
-SAMPLEDIR="path to trimmed reads"  
+SAMPLEDIR="full path to trimmed reads directory"  
+
+# Define the project's base directory. This is where the results will go.
+SAMPLEDIR_BASE="Full path to base directory"
+
+#============================================================================
+# PART 1 - Run Mitofinder in a loop using trimmed reads
+#============================================================================
+
+# Create the results directory
+mkdir -p ${SAMPLEDIR_BASE}/mitofinder_trimmedreads_All_Results
 
 # Loop through the R1 files
 for GETSAMPLENAME in ${SAMPLEDIR}/*_R1_PE_trimmed.fastq.gz; do
     SAMPLENAME=$(basename "$GETSAMPLENAME" _R1_PE_trimmed.fastq.gz)
     
     # Create a directory for the current sample
-    mkdir -p ./mitofinder_trimmedreads_All_Results/${SAMPLENAME}
+    mkdir -p ${SAMPLEDIR_BASE}/mitofinder_trimmedreads_All_Results/${SAMPLENAME}
     
     # Change to the sample's directory
-    cd mitofinder_trimmedreads_All_Results/${SAMPLENAME} || exit 1  # Ensure exit if cd fails
+    cd ${SAMPLEDIR_BASE}/mitofinder_trimmedreads_All_Results/${SAMPLENAME} || exit 1  # Ensure exit if cd fails
 
     # Run mitofinder with the specified options
     mitofinder \
         -j "${SAMPLENAME}_mitofinder_trimmedreads_results" \
         -o 5 \
-        -r "path to reference data set.gb" \
+        -r "full path to reference file" \
         -1 "${SAMPLEDIR}/${SAMPLENAME}_R1_PE_trimmed.fastq.gz" \
         -2 "${SAMPLEDIR}/${SAMPLENAME}_R2_PE_trimmed.fastq.gz" \
         --new-genes
 
-    # Return to the original directory
-    cd ../.. || exit 1  # Ensure exit if cd fails
+    # Return to the base directory
+    cd ${SAMPLEDIR_BASE} || exit 1  # Ensure exit if cd fails
 done
 #
-#
+#=================================================================================
 # PART2 - These are extra steps that will copy the most important files from the results directories and group them together
-#
-mkdir -p mitofinder_trimmedreads_Final_Results
+#=================================================================================
+
+mkdir -p ${SAMPLEDIR_BASE}/mitofinder_trimmedreads_Final_Results
 for GETSAMPLENAME in ${SAMPLEDIR}/*_R1_PE_trimmed.fastq.gz
 do
 SAMPLENAME=$(basename "$GETSAMPLENAME" _R1_PE_trimmed.fastq.gz)
-cp -r ./*trimmedreads_All_Results/${SAMPLENAME}/*_results/*_Final_Results ./mitofinder_trimmedreads_Final_Results
-cp    ./*trimmedreads_All_Results/${SAMPLENAME}/*.log ./mitofinder_trimmedreads_Final_Results
+cp -r ${SAMPLEDIR_BASE}/*trimmedreads_All_Results/${SAMPLENAME}/*_results/*_Final_Results ${SAMPLEDIR_BASE}/mitofinder_trimmedreads_Final_Results
+cp    ${SAMPLEDIR_BASE}/*trimmedreads_All_Results/${SAMPLENAME}/*.log ${SAMPLEDIR_BASE}/mitofinder_trimmedreads_Final_Results
 done
 #
-mkdir mitofinder_trimmedreads_Final_Genes
-for FINAL_GENES in ./*trimmedreads_Final_Results
+mkdir -p ${SAMPLEDIR_BASE}/mitofinder_trimmedreads_Final_Genes
+for FINAL_GENES in ${SAMPLEDIR_BASE}/*trimmedreads_Final_Results
 do
-cp "$FINAL_GENES"/*Final_Results/*final_genes_NT.fasta ./mitofinder_trimmedreads_Final_Genes
+cp "$FINAL_GENES"/*Final_Results/*final_genes_NT.fasta ${SAMPLEDIR_BASE}/mitofinder_trimmedreads_Final_Genes
 done
 #
-#
-# PART3 - This will copy all assembled mitocontigs into a single directory
-#
+echo "Results copied to directory 'mitofinder_trimmedreads_Final_Results'"
+echo "Final Genes copied to directory 'mitofinder_trimmedreads_Final_Genes'"
+
+#===============================================================================
+# PART3 - Copy all assembled mitocontigs into a single directory
+#===============================================================================
+
 # Make a new directory for copied final mitocontigs
-mkdir -p mitofinder_final_mito_contigs
+mkdir -p ${SAMPLEDIR_BASE}/mitofinder_final_mito_contigs
 
 # Loop that will get sample names from the R1 trimmed reads file and copy final mitocontigs
 for GETSAMPLENAME in ${SAMPLEDIR}/*_R1_PE_trimmed.fastq.gz
@@ -90,21 +103,23 @@ do
     SAMPLENAME=$(basename "$GETSAMPLENAME" _R1_PE_trimmed.fastq.gz)
     
     # Check and copy *_contig_*.fasta files
-    if ls ./*trimmedreads_All_Results/${SAMPLENAME}/*_results/*_Final_Results/*_contig_*.fasta 1> /dev/null 2>&1; then
-        cp ./*trimmedreads_All_Results/${SAMPLENAME}/*_results/*_Final_Results/*_contig_*.fasta ./mitofinder_final_mito_contigs
+    if ls ${SAMPLEDIR_BASE}/*trimmedreads_All_Results/${SAMPLENAME}/*_results/*_Final_Results/*_contig_*.fasta 1> /dev/null 2>&1; then
+        cp ${SAMPLEDIR_BASE}/*trimmedreads_All_Results/${SAMPLENAME}/*_results/*_Final_Results/*_contig_*.fasta ${SAMPLEDIR_BASE}/mitofinder_final_mito_contigs
     fi
     
     # Check and copy *_contig.fasta files
-    if ls ./*trimmedreads_All_Results/${SAMPLENAME}/*_results/*_Final_Results/*_contig.fasta 1> /dev/null 2>&1; then
-        cp ./*trimmedreads_All_Results/${SAMPLENAME}/*_results/*_Final_Results/*_contig.fasta ./mitofinder_final_mito_contigs
+    if ls ${SAMPLEDIR_BASE}/*trimmedreads_All_Results/${SAMPLENAME}/*_results/*_Final_Results/*_contig.fasta 1> /dev/null 2>&1; then
+        cp ${SAMPLEDIR_BASE}/*trimmedreads_All_Results/${SAMPLENAME}/*_results/*_Final_Results/*_contig.fasta ${SAMPLEDIR_BASE}/mitofinder_final_mito_contigs
     fi
 done
 
 # Remove *_genes_* files
-rm -f ./mitofinder_final_mito_contigs/*_genes_*
+rm -f ${SAMPLEDIR_BASE}/mitofinder_final_mito_contigs/*_genes_*
 
-echo "DONE. All mitochondrial contigs copied to directory 'mitofinder_final_mito_contigs'"
+echo "All mitochondrial contigs copied to directory 'mitofinder_final_mito_contigs''"
+echo "DONE"
 echo = `date` job $JOB_NAME done
+
 ```
 
 
@@ -117,9 +132,13 @@ These items need to be added in the script:
 
   After the '=' paste the full path to the trimmed reads.
 
-2. For flag -o write the digit for the genetic code (see GENETIC CODES below)
+2. SAMPLEDIR_BASE="Full path to base directory"
 
-3. For flag -r include path to refrence data set in GenBank format (.gb). Or, premade reference data sets can be used. See "REFERENCE DATABASES" below.
+   After the '=' paste the full path to the base directory. This is where the results will go.
+
+3. In Part 1 for the mitofinder flag -o write the digit for the genetic code (see GENETIC CODES below)
+
+4. In Part 1 for the mitofinder flag -r include path to refrence data set in GenBank format (.gb). Or, premade reference data sets can be used. See "REFERENCE DATABASES" below.
 
 GENETIC CODES
  1. The Standard Code 
