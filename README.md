@@ -33,6 +33,10 @@ echo + `date` job $JOB_NAME started in $QUEUE with jobID=$JOB_ID on $HOSTNAME
 echo + NSLOTS = $NSLOTS
 #
 
+#============================================================================
+# CONFIGURATION
+#============================================================================
+
 # Define the directory containing the trimmed reads
 SAMPLEDIR="full path to trimmed reads directory"  
 
