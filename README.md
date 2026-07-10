@@ -132,17 +132,21 @@ The trimmed reads files need to end in '_R1_PE_trimmed.fastq.gz' (forward) and '
 
 These items need to be added in the script:
 
-1. SAMPLEDIR="path to trimmed reads"
+A. Under CONFIGURATION
+
+  1. SAMPLEDIR="path to trimmed reads"
 
   After the '=' paste the full path to the trimmed reads.
 
-2. SAMPLEDIR_BASE="Full path to base directory"
+  2. SAMPLEDIR_BASE="Full path to base directory"
 
    After the '=' paste the full path to the base directory. This is where the results will go.
 
-3. In Part 1 for the mitofinder flag -o write the digit for the genetic code (see GENETIC CODES below)
+B. Under Part 1
 
-4. In Part 1 for the mitofinder flag -r include path to refrence data set in GenBank format (.gb). Or, premade reference data sets can be used. See "REFERENCE DATABASES" below.
+   3. For the mitofinder flag -o write the digit for the genetic code (see GENETIC CODES below)
+
+   4. For the mitofinder flag -r include path to refrence data set in GenBank format (.gb). Or, premade reference data sets can be used. See "REFERENCE DATABASES" below.
 
 GENETIC CODES
  1. The Standard Code 
