@@ -203,8 +203,8 @@ FLAGS
 #$ -l mres=7G,h_data=7G,h_vmem=7G
 #$ -cwd
 #$ -j y
-#$ -N mitofinder_list_and_count_genes
-#$ -o mitofinder_list_and_count_genes.log
+#$ -N mf_list_and_count_genes
+#$ -o mf_list_and_count_genes.log
 #
 # ----------------Modules------------------------- #
 #
