@@ -22,8 +22,8 @@ Results will be in 4 directories where the job file is run.
 #$ -l mres=72G,h_data=8G,h_vmem=8G,himem
 #$ -cwd
 #$ -j y
-#$ -N mf_test
-#$ -o mf_test.log
+#$ -N mf_treads
+#$ -o mf_treads.log
 #
 # ----------------Modules------------------------- #
 module load bioinformatics/mitofinder
