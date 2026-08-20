@@ -46,8 +46,8 @@ SAMPLEDIR_BASE="Full path to base directory"
 # Define the reference mitochondrial genome in GenBank format (.gb).
 REFERENCE="full path to reference file"
 
-#Set the Genetic Code (number from 1-18).
-GENETICCODE="enter number from 1 to 18"
+#Set the Genetic Code (number from 1-25).
+GENETICCODE="enter number from 1 to 25"
 
 #============================================================================
 # PART 1 - Run Mitofinder in a loop using trimmed reads
