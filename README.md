@@ -47,7 +47,7 @@ SAMPLEDIR_BASE="Full path to base directory"
 REFERENCE="full path to reference file"
 
 #Set the Genetic Code (number from 1-25).
-GENETICCODE="enter number from 1 to 25"
+GENETICCODE="enter numerical digit"
 
 #============================================================================
 # PART 1 - Run Mitofinder in a loop using trimmed reads
@@ -138,7 +138,7 @@ Under CONFIGURATION
 
   4. GENETICCODE="enter number from 1 to 18"
 
-     After the '=' enter a number from 1 to 18 that corresponds to the genetic code of the samples (see GENETIC CODES below)
+     After the '=' enter a number that corresponds to the genetic code of the samples (see GENETIC CODES below)
 
 
 GENETIC CODES
